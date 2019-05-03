@@ -14,15 +14,13 @@ def Fibonacci(n,k):
             F2=Fib
         return Fib
 
-print(Fibonacci(5,3))
+print(Fibonacci(50,3))
 
-with open('rosalind_fib.txt', 'r') as file:
+with open('Fibonacci/rosalind_fib.txt', 'r') as file:
     value=list(map(int,file.read().split()))
-    
-    fh=open('rosalind_fib_output.txt','w+')
+
+    fh=open('Fiboancci/rosalind_fib_output.txt','w+')
 
     fh.write(str(Fibonacci(value[0],value[1])))
 
     fh.close()
-    
-    

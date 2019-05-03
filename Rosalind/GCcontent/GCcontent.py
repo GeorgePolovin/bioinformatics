@@ -1,5 +1,7 @@
 import time
 
+
+
 def GCcontent(seq):
     return 100*(seq.count('G') + seq.count('C'))/len(seq)
 
@@ -13,7 +15,7 @@ def fasta2dict(file):
         elif item.startswith('>') and cur_ID!='':
             pairs[cur_ID]=''.join(cur_seq)
             cur_ID=item.lstrip('>')
-            cur_seq=[]      
+            cur_seq=[]
         else:
             cur_seq.append(item)
         pairs[cur_ID]=''.join(cur_seq)
@@ -28,13 +30,15 @@ def sort_by_GC(dic):
             maxkey=key
         else:
             continue
-    return str(maxkey) + '\n' + str(maxGC)     
+    return str(maxkey) + '\n' + str(maxGC)
 
 t0=time.time()
-with open('rosalind_gc.txt', 'r') as f:
+
+
+with open("GCcontent/rosalind_gc.txt", 'r') as f:
     sequences = f.read()
     #print(fasta2dict(sequences))
-    fh=open('rosalind_gc_output.txt','w+')
+    fh=open("GCcontent/rosalind_gc_output.txt",'w+')
     fh.write(sort_by_GC(fasta2dict(sequences)))
     fh.close()
 
