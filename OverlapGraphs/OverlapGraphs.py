@@ -12,7 +12,7 @@ def fasta2dict(file):
         elif item.startswith('>') and cur_ID!='':
             pairs[cur_ID]=''.join(cur_seq)
             cur_ID=item.lstrip('>')
-            cur_seq=[]      
+            cur_seq=[]
         else:
             cur_seq.append(item)
         pairs[cur_ID]=''.join(cur_seq)
@@ -30,7 +30,7 @@ def overlap_pairs(seqs,overlap_len):
                 else:
                     continue
     return overlaps
-                    
+
 
 
 
@@ -47,5 +47,34 @@ AAATCCC
 GGGTGGG
 '''
 
-DNAseq=fasta2dict(string)
-print(overlap_pairs(DNAseq,3))
+with open('OverlapGraphs/overlap_graph.txt','r') as file:
+    seq_dict=fasta2dict(file.read())
+    pairs_list=overlap_pairs(seq_dict,3)
+    pairs_format=''
+    for pair in pairs_list:
+        pairs_format+=pair[0]+ ' '+pair[1]+'\n'
+    fh=open('OverlapGraphs/overlap_graph_results.txt','w+')
+    fh.write(pairs_format)
+    fh.close()
+
+
+
+############################USER SOLUTIONS###################################
+#!/usr/bin/env python
+
+import sys
+import re
+import collections
+
+with open(sys.argv[1], 'rU') as f:
+  data = f.read().replace("\n","")
+
+pattern = re.compile(r'>(?P<label>Rosalind_\d{4})\s*(?P<bases>[ACGT\s]+)')
+
+dnastrings = collections.OrderedDict(pattern.findall(data))
+
+for s1 in dnastrings.keys():
+  for s2 in dnastrings.keys():
+    if s1 != s2:
+      if dnastrings[s1][-3:] == dnastrings[s2][:3]:
+        print s1, s2

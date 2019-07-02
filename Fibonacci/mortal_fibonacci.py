@@ -43,16 +43,17 @@ def mortal_fibonacci(n,m):
         return fibonacci(n,1)
 '''
 
-#print(mortal_fibonacci(13,1,4))
+print(mortal_fibonacci(13,1,4))
 
-with open('rosalind_fibd.txt', 'r') as file:
+
+with open('Fibonacci/rosalind_fibd.txt', 'r') as file:
     values=list(map(int,file.read().split()))
 
-    fh=open('rosalind_fibd_output.txt','w+')
+    fh=open('Fibonacci/rosalind_fibd_output.txt','w+')
 
     fh.write(str(mortal_fibonacci(values[0],1,values[1])))
 
-    fh.close()  
+    fh.close()
 '''
 #!/usr/bin/env python
 def fib(n,k=1):
