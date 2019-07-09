@@ -48,9 +48,13 @@ def longest_shared_motif(dict):
                 motifs.append(dict[shortest_seq_id][start:end])
     return max(motifs, key=len)
 
+def write_to_txt(result_filename, data_string):
+    with open(result_filename,'w+') as fh:
+        fh.write(data_string)
+
 
 seq_dict=fasta_to_dict('shared_motif/shared_motif.txt')
-print(longest_shared_motif(seq_dict))
+write_to_txt('shared_motif/shared_motif_results.txt',longest_shared_motif(seq_dict))
 
 
 ##########USER SOLUTIONS##########
