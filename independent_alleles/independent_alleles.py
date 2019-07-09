@@ -29,7 +29,10 @@ def hetero_prob_min(gen,min_num):
         print(prob_hetero)
     return frac_hetero_offspring*prob_hetero
 
+<<<<<<< HEAD
 #AaBa probability is always 1/4; need to find way to calculate 'binomial distribution'; find probs from N to total
+=======
+>>>>>>> 4e4ad007b6a49d88c31ecc95e7ae9d497e312bb3
 
 
 
