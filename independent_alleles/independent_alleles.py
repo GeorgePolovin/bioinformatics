@@ -23,11 +23,15 @@ def write_to_txt(result_filename, data_string):
 def hetero_prob_min(gen,min_num):
     total_offspring=2**gen
     frac_hetero_offspring=min_num/total_offspring
-    prob_hetero=1
-    for generation in range(1,gen+1):
-        prob_hetero=prob_hetero*(generation*(1/4)*2/(2**generation))
-        print(prob_hetero)
-    return frac_hetero_offspring*prob_hetero
+    prob_hetero=0
+    for slice in range(min_num,total_offspring+1):
+        prob_hetero=prob_hetero+((1/4)**(slice))
+    return prob_hetero
+
+    #for generation in range(1,gen+1):
+        #prob_hetero=prob_hetero*(generation*(1/4)*2/(2**generation))
+        #print(prob_hetero)
+    #return frac_hetero_offspring*prob_hetero
 
 #AaBa probability is always 1/4; need to find way to calculate 'binomial distribution'; find probs from N to total
 
