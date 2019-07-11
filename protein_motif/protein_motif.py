@@ -38,15 +38,35 @@ def id_list(file):
         list=[item for item in file.read().split('\n') if item!='']
     return list
 
-def find_Nglycosylation_motif(prot_dict):
-    for id in prot_dict:
+#find motif: N{P}[ST]{P}
 
+def find_Nglycosylation_motif(prot_dict):
+    loc_dict={}
+    for id in prot_dict:
+        index_list=[]
+        hit_list=[]
+        seq=prot_dict[id]
+        if 'N' not in seq:
+            continue
+        while 'N' in seq:
+            index=seq.index('N')
+            if seq[index+1]!='P' and seq[index+3]!='P':
+                if seq[index+2]=='S' or seq[index+2]=='T':
+                    hit_list.append(index_list[-1]+index)
+            if index_list==[]:
+                index_list.append(index)
+            else:
+                index_list.append(index_list[-1]+index)
+            seq=seq[index+4:]
+        loc_dict[id]=hit_list
+    return loc_dict
 
 
 #-----------------RUN_SCRIPT------------------
 id_list=id_list('protein_motif.txt')
 seq_dict=uniprot_to_dict(id_list)
-print(seq_dict)
+index_dict=find_Nglycosylation_motif(seq_dict)
+print(index_dict)
 
 '''
 def FindMotif(s,t):
@@ -62,3 +82,18 @@ def FindMotif(s,t):
         s=s[index:]
     return ' '.join(str(item) for item in output)
 '''
+
+seq='MKNKFKTQEELVNHLKTVGFVFANSEIYNGLANAWDYGPLGVLLKNNLKNLWWKEFVTKQKDVVGLDSAIILNPLVWKASGHLDNFSDPLIDCKNCKARYRADKLIESFDENIHIAENSSNEEFAKVLNDYEISCPTCKQFNWTEIRHFNLMFKTYQGVIEDAKNVVYLRPETAQGIFVNFKNVQRSMRLHLPFGIAQIGKSFRNEITPGNFIFRTREFEQMEIEFFLKEESAYDIFDKYLNQIENWLVSACGLSLNNLRKHEHPKEELSHYSKKTIDFEYNFLHGFSELYGIAYRTNYDLSVHMNLSKKDLTYFDEQTKEKYVPHVIEPSVGVERLLYAILTEATFIEKLENDDERILMDLKYDLAPYKIAVMPLVNKLKDKAEEIYGKILDLNISATFDNSGSIGKRYRRQDAIGTIYCLTIDFDSLDDQQDPSFTIRERNSMAQKRIKLSELPLYLNQKAHEDFQRQCQK'
+
+index_list=[]
+while 'N' in seq:
+    index=seq.index('N')
+    #print(index)
+    if seq[index+1]!='P' and seq[index+3]!='P':
+        if seq[index+2]=='S' or seq[index+2]=='T':
+            if index_list==[]:
+                index_list.append(index+1)
+            else:
+                index_list.append(index_list[-1]+index+1)
+    seq=seq[index+4:]
+#print(index_list)
