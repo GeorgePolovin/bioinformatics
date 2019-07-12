@@ -18,12 +18,20 @@ P20840_SAG1_YEAST
 79 109 135 248 306 348 364 402 485 501 614
 
 '''
+import re
 import urllib.request #native python3 lib for pulling data from url
+
 
 uniprot_db='http://www.uniprot.org/uniprot/'
 folder_dir='protein_motif/'
 
-#Take a list of uniprot access IDs and add fasta protein sequence to dictionary with structure of id:sequence
+#Take a rosalind input file and parse uniprot access IDs into a list
+def id_list(file):
+    with open(folder_dir+file,'r') as file:
+        list=[item for item in file.read().split('\n') if item!='']
+    return list
+
+#Take a list of uniprot access IDs, request fasta data from website, and add fasta protein sequence to dictionary with structure of id:sequence
 def uniprot_to_dict(id_list):
     dict={}
     for id in id_list:
@@ -32,14 +40,8 @@ def uniprot_to_dict(id_list):
         dict[id]=fasta
     return dict
 
-#Take a rosalind input file and parse uniprot access IDs into a list
-def id_list(file):
-    with open(folder_dir+file,'r') as file:
-        list=[item for item in file.read().split('\n') if item!='']
-    return list
-
-#find motif: N{P}[ST]{P}
-
+#iterate through each sequence to find first instances of N{P}[ST]{P}, then slice sequence after instance and repeat
+#store in separate dictionary
 def find_Nglycosylation_motif(prot_dict):
     loc_dict={}
     for id in prot_dict:
@@ -50,50 +52,37 @@ def find_Nglycosylation_motif(prot_dict):
             continue
         while 'N' in seq:
             index=seq.index('N')
-            if seq[index+1]!='P' and seq[index+3]!='P':
-                if seq[index+2]=='S' or seq[index+2]=='T':
-                    hit_list.append(index_list[-1]+index)
             if index_list==[]:
                 index_list.append(index)
             else:
-                index_list.append(index_list[-1]+index)
-            seq=seq[index+4:]
+                index_list.append(index_list[-1]+index+1)
+            try:
+                if seq[index+1]!='P' and seq[index+3]!='P':
+                    if seq[index+2]=='S' or seq[index+2]=='T':
+                        hit_list.append(index_list[-1]+1)
+            except:
+                pass
+            seq=seq[index+1:]
         loc_dict[id]=hit_list
     return loc_dict
 
+#use real expressions to find each instance of N{P}[ST]{P}
+def find_glyco_motif(prot_dict):
+    loc_dict={}
+    for id in prot_dict:
+        loc_dict[id]=[match.start(0)+1 for match in re.finditer('N[^P][ST][^P]',prot_dict[id])]
+    return loc_dict
+
+#write protein motif locations to text file
+def write_to_file(loc_dict):
+    with open(folder_dir+'protein_motif_results.txt','w+') as file:
+        for id in loc_dict:
+            if loc_dict[id]!=[]:
+                file.write(id+'\n'+str(index_dict[id]).strip('[]')+'\n')
 
 #-----------------RUN_SCRIPT------------------
 id_list=id_list('protein_motif.txt')
 seq_dict=uniprot_to_dict(id_list)
-index_dict=find_Nglycosylation_motif(seq_dict)
-print(index_dict)
-
-'''
-def FindMotif(s,t):
-    output=[]
-    if t not in s:
-        print('match not found')
-    while t in s:
-        index=s.index(t)+1
-        if output==[]:
-            output.append(index)
-        else:
-            output.append(output[-1]+index)
-        s=s[index:]
-    return ' '.join(str(item) for item in output)
-'''
-
-seq='MKNKFKTQEELVNHLKTVGFVFANSEIYNGLANAWDYGPLGVLLKNNLKNLWWKEFVTKQKDVVGLDSAIILNPLVWKASGHLDNFSDPLIDCKNCKARYRADKLIESFDENIHIAENSSNEEFAKVLNDYEISCPTCKQFNWTEIRHFNLMFKTYQGVIEDAKNVVYLRPETAQGIFVNFKNVQRSMRLHLPFGIAQIGKSFRNEITPGNFIFRTREFEQMEIEFFLKEESAYDIFDKYLNQIENWLVSACGLSLNNLRKHEHPKEELSHYSKKTIDFEYNFLHGFSELYGIAYRTNYDLSVHMNLSKKDLTYFDEQTKEKYVPHVIEPSVGVERLLYAILTEATFIEKLENDDERILMDLKYDLAPYKIAVMPLVNKLKDKAEEIYGKILDLNISATFDNSGSIGKRYRRQDAIGTIYCLTIDFDSLDDQQDPSFTIRERNSMAQKRIKLSELPLYLNQKAHEDFQRQCQK'
-
-index_list=[]
-while 'N' in seq:
-    index=seq.index('N')
-    #print(index)
-    if seq[index+1]!='P' and seq[index+3]!='P':
-        if seq[index+2]=='S' or seq[index+2]=='T':
-            if index_list==[]:
-                index_list.append(index+1)
-            else:
-                index_list.append(index_list[-1]+index+1)
-    seq=seq[index+4:]
-#print(index_list)
+#index_dict=find_Nglycosylation_motif(seq_dict)
+index_dict=find_glyco_motif(seq_dict)
+write_to_file(index_dict)
