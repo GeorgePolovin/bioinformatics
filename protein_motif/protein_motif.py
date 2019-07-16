@@ -36,7 +36,7 @@ def uniprot_to_dict(id_list):
     dict={}
     for id in id_list:
         fasta_list_split=urllib.request.urlopen(uniprot_db+id+'.fasta').read().decode('utf-8').split('\n')
-        fasta=''.join([fasta_list_split[i] for i in range(1,len(fasta_list_split))])
+        fasta=''.join([fasta_list_split[1:] for i in range(1,len(fasta_list_split))])
         dict[id]=fasta
     return dict
 
@@ -70,19 +70,41 @@ def find_Nglycosylation_motif(prot_dict):
 def find_glyco_motif(prot_dict):
     loc_dict={}
     for id in prot_dict:
-        loc_dict[id]=[match.start(0)+1 for match in re.finditer('N[^P][ST][^P]',prot_dict[id])]
+        loc_dict[id]=[match.start(0)+1 for match in re.finditer(r'N(?=[^P][ST][^P])',prot_dict[id])]
     return loc_dict
 
-#write protein motif locations to text file
+#format and write protein motif locations to a text file
 def write_to_file(loc_dict):
     with open(folder_dir+'protein_motif_results.txt','w+') as file:
         for id in loc_dict:
             if loc_dict[id]!=[]:
-                file.write(id+'\n'+str(index_dict[id]).strip('[]')+'\n')
+                file.write(id+'\n'+str(index_dict[id]).strip('[]').replace(',','')+'\n')
 
 #-----------------RUN_SCRIPT------------------
 id_list=id_list('protein_motif.txt')
 seq_dict=uniprot_to_dict(id_list)
-#index_dict=find_Nglycosylation_motif(seq_dict)
-index_dict=find_glyco_motif(seq_dict)
+index_dict=find_Nglycosylation_motif(seq_dict)
+#index_dict=find_glyco_motif(seq_dict)
 write_to_file(index_dict)
+
+#=================USER_SOLUTION=====================
+#!/usr/bin/env python
+from re import finditer
+from sys import argv
+from urllib.request import urlopen
+
+uniprot = "http://www.uniprot.org/uniprot/%s.fasta"
+
+for protein in open(argv[1], 'r').read().strip().splitlines():
+
+    # Fetch the protein's fasta file and get rid of newlines.'
+    f = urlopen(uniprot % protein).read().decode('utf-8')
+    f = ''.join(f.splitlines()[1:])
+
+    # Find all the positions of the N-glycosylation motif.
+    locs = [g.start()+1 for g in finditer(r'(?=N[^P][ST][^P])', f)]
+
+    # Print them out, if any.
+    if locs != []:
+        print(protein)
+        print(' '.join(map(str, locs)))
