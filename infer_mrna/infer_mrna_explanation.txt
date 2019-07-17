@@ -1,0 +1,3 @@
+A fairly trivial problem. We begin with the codon table presented in Translating RNA into Proteins. Instead of a table mapping codons to proteins, we would like to have a table which tells us how many codons could have produced a given protein: so we invert the table to produce a mapping from protein to a number of possible codons. (we don't actually need the list for this problem - you can generate it if you like)
+
+Having inverted the map, we iterate across the protein string. For each character in the string, we multiply by the value found in the table, and then reduce by taking the result mod 10^6. Finally, we multiply by 3 for the stop codon, and take the mod by one million once more, and we're done. (sort of like taking back one cubit, in Raiders of the Lost Ark)
