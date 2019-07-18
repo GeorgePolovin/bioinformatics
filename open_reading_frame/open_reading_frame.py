@@ -31,15 +31,38 @@ def translate(dna_seq):
         protein+=codon_table[nucleo[dna_seq[i]]*16 + nucleo[dna_seq[i+1]]*4 + nucleo[dna_seq[i+2]]]
     return protein
 
+#trim translated protein sequence from Start(Met) to Stop(*) codon; first find all 'M' position and trim sequence to first '*' found in each case
+def trim_orf(prot_seq):
+    orfs_in_seq=[]
+    start_pos=[index for index,aa in enumerate(prot_seq) if aa=='M']
+    for start in start_pos:
+        end=prot_seq[start:].find('*')
+        if end!=-1:
+            orfs_in_seq.append(prot_seq[start:end+start])
+    return orfs_in_seq
+
+#interate through all 3 open reading frames of forward and reverse sequence; be sure to choose endpoint as mod 3 to avoid error, and extend the list of translated open reading frame
+def list_all_orfs(dna_seq):
+    orfs=[]
+    for seq in [dna_seq,DNAreverse_complement(dna_seq)]:
+        for i in range(0,3):
+            endpoint=len(seq)-len(seq[i:])%3
+            cur_orf=trim_orf(translate(seq[i:endpoint]))
+            orfs.extend(cur_orf)
+    return list(dict.fromkeys(orfs)) #remove duplicate sequences and maintain order
+
+#write results to txt file
+def write_result(result_list, filename):
+    with open(filename,'w+') as file:
+        for seq in result_list:
+            file.write(seq+'\n')
+
+#read rosalind download txt input and output results in txt
+def read_then_write(inputfile):
+    with open(inputfile,'r') as file:
+        DNA_seq=''.join(file.read().split('\n')[1:])
+        results=list_all_orfs(DNA_seq)
+        write_result(results,inputfile.replace('.txt','')+'_results.txt')
 
 
-
-
-
-fasta='>Rosalind_99\nAGCCATGTAGCTAACTCAGGTTACATGGGGATGACCCCGCGACTTGGATTAGAGTCTCTTTTGGAATAAGCCTGAATGATCCGAGTAGCATCTCAG'
-protein=translate(fasta.split('\n')[1])
-print(protein)
-print(protein.find('M'))
-print(protein.find('*'))
-print(protein[8:22])
-print(DNAreverse_complement(fasta.split('\n')[1]))
+read_then_write('open_reading_frame/rosalind_orf.txt')
