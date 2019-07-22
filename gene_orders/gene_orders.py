@@ -37,16 +37,29 @@ def shift_list(perm_list):
     return perm_list
 
 def permutation(gene_num_list):
+    #gene_num_list.index(max(gene_num_list))
     perm_list=[]
     for index,element in enumerate(gene_num_list):
-        llist=gene_num_list[:index+1]
-        rlist=gene_num_list[index+1:]
-        if len(rlist)!=1:
-            for x in range(0,len(rlist)):
-                perm_list.append(llist.extend(rlist.append(rlist.pop(0))))
+        llist=gene_num_list[:index]
+        rlist=gene_num_list[index:]
+        for x in range(0,len(rlist)):
+            rlist.append(rlist.pop(0))
+            perm_list.append(llist+rlist)
     return perm_list
 
+def permute(xs, low=0):
+    if low + 1 >= len(xs):
+        yield xs
+    else:
+        for p in permute(xs, low + 1):
+            yield p
+        for i in range(low + 1, len(xs)):
+            xs[low], xs[i] = xs[i], xs[low]
+            for p in permute(xs, low + 1):
+                yield p
+            xs[low], xs[i] = xs[i], xs[low]
 
-
-test=[0,1,2,3,4]
+test=[1,2,3,4]
 print(permutation(test))
+#for x in permute(test,):
+    #print(x)
