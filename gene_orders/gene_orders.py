@@ -59,7 +59,46 @@ def permute(xs, low=0):
                 yield p
             xs[low], xs[i] = xs[i], xs[low]
 
-test=[1,2,3,4]
-print(permutation(test))
+def per(num_list):
+    if not num_list:
+        return [[]]
+    else:
+        list_of_permutes=[]
+        for permute in per(num_list[:-1]):
+            list_of_permutes+= [permute[:i] + num_list[-1:] + permute[i:]
+                                    for i in range(0,len(permute)+1)]
+        return list_of_permutes
+
+with open('gene_orders/rosalind_perm.txt','r') as rfile:
+    n=int(rfile.readlines()[0])
+    result=per(list(range(1,n+1)))
+    with open('gene_orders/rosalind_perm_result.txt','w+') as wfile:
+        result_string=str(len(result))+'\n'
+        for item in result:
+            result_string+=str(item).strip('[]').replace(',',' ') +'\n'
+        wfile.write(result_string)
+
+
+#test=[1,2,3,4]
+#print(permutation(test))
 #for x in permute(test,):
     #print(x)
+#print(per(test))
+
+
+
+
+
+#########USER_SOLUTION########
+'''
+n=7
+
+def permutations(l):
+    return [ (m[:i] + [l[0]] + m[i:]) for m in permutations(l[1:]) for i in xrange(len(m)+1) ] if len(l)>1 else [l]
+
+p = permutations(range(1,n+1))
+
+print len(p)
+for l in p:
+    print ' '.join(map(str,l))
+'''
