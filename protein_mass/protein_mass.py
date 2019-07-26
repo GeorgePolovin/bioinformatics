@@ -28,16 +28,27 @@ T   101.04768
 V   99.06841
 W   186.07931
 Y   163.06333
-water   18.01056'''
+*   18.01056'''
+#weight of water is *
 
 def calc_prot_mass(prot_seq):
     mass_dict=dict(zip(protein_mass_table.split()[0::2],[float(i) for i in protein_mass_table.split()[1::2]])) #convert mass table to dictionary, make sure to convert masses to float
-    prot_mass=mass_dict['water'] #start with mass of water
+    #prot_mass=mass_dict['*'] #start with mass of water
+    prot_mass=0
     for aa in prot_seq:
         prot_mass+=mass_dict[aa]
     return prot_mass
 
-with open('protein_mass/protein_mass.txt','r') as rfile:
+with open('protein_mass/rosalind_prtm.txt','r') as rfile:
     protein_sequence=rfile.read().strip('\n')
-with open('protein_mass/protein_mass_result.txt','w+') as wfile:
+with open('protein_mass/rosalind_prtm_result.txt','w+') as wfile:
     wfile.write(str(calc_prot_mass(protein_sequence)))
+
+
+###########USER_SOLUTION##########
+'''
+mmt = dict(zip(mmt[::2],map(float,mmt[1::2])))#table
+
+s = "SKADYEK"
+print "%.2f"%(sum(map(lambda x:mmt[x],s))+18.01528)
+'''
