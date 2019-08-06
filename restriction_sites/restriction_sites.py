@@ -30,12 +30,33 @@ def DNAreverse_complement(seq):
 def palindrome_pos_len(seq):
     result_tuples=[]
     for start in range(len(seq)):
-        for end in range(start+4,len(seq)):
+        for end in range(start+4,len(seq)+1):
             if seq[start:end]==DNAreverse_complement(seq[start:end]):
-                if len(seq[start:end])<=12:
-                    result_tuples.append((start+1,end))
+                length=len(seq[start:end])
+                if length<=12:
+                    result_tuples.append((start+1,length))
     return result_tuples
 
-test='TCAATGCATGCGGGTCTATATGCAT'
-print(palindrome_pos_len(test))
-print(palindrome_pos_len(DNAreverse_complement(test)))
+def print_results(tuple_list):
+    result_string=''
+    for pair in tuple_list:
+        result_string+=str(pair[0])+' '+str(pair[1])+'\n'
+    return result_string
+
+def loc_restric(rosalind_file):
+    with open(rosalind_file, 'r') as rfile:
+        sequence=''.join(rfile.read().splitlines()[1:])
+    with open(rosalind_file+'_result.txt','w+') as wfile:
+        wfile.write(print_results(palindrome_pos_len(sequence)))
+
+loc_restric('restriction_sites/rosalind_revp.txt')
+
+
+##########################USER_SOLUTIONS############################
+def Problem09(): #Protein Translation
+    file = open("./rosalind9.txt", "r")
+    dna = file.read()
+    for i in range(len(dna)):
+        for j in range(4, 9):
+            if i + j < len(dna) and dna[i:i + j] == reverse_complement(dna[i:i + j]):
+                print i + 1, j
