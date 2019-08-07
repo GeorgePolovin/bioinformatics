@@ -30,16 +30,53 @@ TG
 TT
 '''
 
-def enumerate_lexico(rosalind_file):
-    with open(rosalind_file,'r') as rfile:
-        input=rfile.read().splitlines()
-    alphabet,length=input[0].split(),input[1]
-    
+def enumerate_lexico(alphabet,length):
+    kmer_list=['']
+    for word in kmer_list:
+        for letter in alphabet:
+            kmer_list.append(word+letter)
+        if len(max(kmer_list))==length:
+            break
+    return [kmer for kmer in kmer_list if len(kmer)==length]
 
 
+with open('enumerate_lexicographically/rosalind_lexf.txt','r') as rfile:
+    input=rfile.read().splitlines()
+alph,leng=input[0].split(),int(input[1])
+with open('enumerate_lexicographically/rosalind_lexf_result.txt','w+') as wfile:
+    for kmer in enumerate_lexico(alph,leng):
+        wfile.write(kmer+'\n')
 
 
-    return alphabet, length
+'''Try:
+function f ( length , word )    .. (1)
+        if length = N  then       .. (2)
+            print the word and exit
+         else
+               for a = 1 to A
+                      f(length + 1 , word + alphabet[a])  ..(3)
+'''
 
+##########USER_SOLUTIONS############
+'''
+import Control.Monad
 
-print(enumerate_lexico('enumerate_lexicographically/rosalind_lexf.txt'))
+k_mers k alphabet = replicateM k alphabet
+'''
+'''
+for p in it.product(alphabet,repeat=n):
+    print ''.join(p)
+
+'''
+
+'''
+k = 2
+str = 'P R Q Z U A S N J D'
+alphabet = str.split()
+k_mer = alphabet
+
+for  l in range(k-1):
+    k_mer =  [i+j for i in alphabet for j in k_mer]
+
+for i in k_mer: print i
+'''
