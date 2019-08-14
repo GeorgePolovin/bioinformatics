@@ -39,14 +39,27 @@ def enumerate_lexico(alphabet,length):
             break
     return [kmer for kmer in kmer_list if len(kmer)==length]
 
+def kmers(word, max_len, alphabet):
+    if len(word)==max_len:
+        print(word)
+    else:
+        for letter in alphabet:
+            kmers(word+letter,max_len,alphabet)
 
+
+alpha=['A','C','G','T']
+N=2
+empty_word=''
+kmers(empty_word,N,alpha)
+
+'''
 with open('enumerate_lexicographically/rosalind_lexf.txt','r') as rfile:
     input=rfile.read().splitlines()
 alph,leng=input[0].split(),int(input[1])
 with open('enumerate_lexicographically/rosalind_lexf_result.txt','w+') as wfile:
     for kmer in enumerate_lexico(alph,leng):
         wfile.write(kmer+'\n')
-
+'''
 
 '''Try:
 function f ( length , word )    .. (1)
