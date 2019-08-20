@@ -21,21 +21,30 @@ import sys
 
 def inc_dec_subseq(subseq):
     inc=[]
-    dec=[]
+    #dec=[]
     for index, cur_num in enumerate(subseq):
         cur_inc=[cur_num]
-        cur_dec=[cur_num]
+        #cur_dec=[cur_num]
         for num in subseq[index+1:]:
             if num>cur_num:
                 cur_inc.append(num)
-            if num<cur_num:
-                cur_dec.append(num)
+            #if num<cur_num:
+                #cur_dec.append(num)
             else:
                 continue
-        print(cur_inc)
-        #inc.append(cur_inc)
+        inc.append(cur_inc)
         #dec.append(cur_dec)
-    #return inc, dec
+    return inc
+
+def inc_subset(set):
+    inc=[set[0]]
+    for num in set[1:]:
+        if num<inc[-1]:
+            inc[-1]=num
+        elif num>inc[-1]:
+            inc.append(num)
+    return inc
+
 
 def subset(set,index,set_len,prev_num=-sys.maxsize-1):
     if index==set_len:
@@ -47,8 +56,8 @@ def subset(set,index,set_len,prev_num=-sys.maxsize-1):
     return max(incl,excl)
 
 
-test=[5,1,4,2,3]
-print(subset(test,0,len(test)))
+test=[5,1,4,11,12,13,24,2,3,6,7,8,9]
+print(inc_subset(test))
 
 
 
