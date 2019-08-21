@@ -18,7 +18,6 @@ Sample Output
 '''
 
 import sys
-import math
 
 def inc_dec_subseq(subseq):
     inc=[]
@@ -42,12 +41,12 @@ def inc_subset(set):
     index=[0*x for x in range(N)]
     predecessor=[0*x for x in range(N+1)]
     L=0
-    for i in range(N-1):
+    for i in range(N):
         lo=1
         hi=L
         while lo<=hi:
-            mid=math.ceil((lo+hi)/2)
-            if set[predecessor[mid]]<=set[i]:
+            mid=(lo+hi)//2
+            if set[index[mid]]<set[i]:
                 lo=mid+1
             else:
                 hi=mid-1
@@ -58,10 +57,23 @@ def inc_subset(set):
             L=newL
     S=[0*x for x in range(L)]
     k=index[L]
-    for i in range(L-1,0,-1):
+    for i in range(L-1,-1,-1):
         S[i]=set[k]
         k=predecessor[k]
     return S
+
+def inc_subset2(set):
+    l=[]
+    for i in range(len(set)):
+        print (i)
+        item=max([l[j] for j in range(i) if l[j][-1]<set[i]] or [[]],key=len)
+        l.append(item+[set[i]])
+        #l.append(max([l[j] for j in range(i) if l[j][-1]<set[i]] or [[]],key=len)
+                #+[set[i]])
+        print(l)
+    return max(l,key=len)
+
+
 
 
 def subset(set,index,set_len,prev_num=-sys.maxsize-1):
@@ -74,8 +86,12 @@ def subset(set,index,set_len,prev_num=-sys.maxsize-1):
     return max(incl,excl)
 
 
+
+
 test=[5,1,4,11,12,13,24,2,3,6,7,8,9]
+print(inc_subset2(test))
 print(inc_subset(test))
+#print(longest_increasing_subsequence(test))
 
 
 
