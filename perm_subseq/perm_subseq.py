@@ -18,6 +18,7 @@ Sample Output
 '''
 
 import sys
+import math
 
 def inc_dec_subseq(subseq):
     inc=[]
@@ -37,13 +38,30 @@ def inc_dec_subseq(subseq):
     return inc
 
 def inc_subset(set):
-    inc=[set[0]]
-    for num in set[1:]:
-        if num<inc[-1]:
-            inc[-1]=num
-        elif num>inc[-1]:
-            inc.append(num)
-    return inc
+    N=len(set)
+    index=[0*x for x in range(N)]
+    predecessor=[0*x for x in range(N+1)]
+    L=0
+    for i in range(N-1):
+        lo=1
+        hi=L
+        while lo<=hi:
+            mid=math.ceil((lo+hi)/2)
+            if set[predecessor[mid]]<=set[i]:
+                lo=mid+1
+            else:
+                hi=mid-1
+        newL=lo
+        predecessor[i]=index[newL-1]
+        index[newL]=i
+        if newL>L:
+            L=newL
+    S=[0*x for x in range(L)]
+    k=index[L]
+    for i in range(L-1,0,-1):
+        S[i]=set[k]
+        k=predecessor[k]
+    return S
 
 
 def subset(set,index,set_len,prev_num=-sys.maxsize-1):
